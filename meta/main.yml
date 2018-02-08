@@ -1,0 +1,22 @@
+galaxy_info:
+  author: jnmoal
+  description: Install golang from source for Linux.
+
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: EL
+      versions:
+        - 7
+    - name: Debian
+      versions:
+        - stretch
+    - name: Fedora
+      versions:
+        - 27
+  
+  galaxy_tags:
+    - golang
+    - go

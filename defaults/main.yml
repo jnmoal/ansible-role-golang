@@ -1,0 +1,13 @@
+# Golang installation folder
+# ansible_user shall have writtable access to it. 
+golang_inst_folder: ~/Development/golang/go
+golang_gopath_folder: "{{ golang_inst_folder }}/gopath"
+golang_goroot_folder: "{{ golang_inst_folder }}/go"
+
+# Golang version to be installed.
+# This values is used to switch to the correct branch.
+# The version will be compiled using the go tool.
+golang_version: go1.10
+
+# The repo from which sources are cloned.
+golang_repo_url: https://go.googlesource.com/go

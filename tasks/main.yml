@@ -1,0 +1,51 @@
+- name: Include OS specific vars
+  include_vars: "{{ ansible_distribution }}.yml"
+
+- name: Prerequisites
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+
+- name: Creating golang directory
+  file:
+    path: "{{ golang_inst_folder }}"
+    state: directory
+    
+- name: Install prerequisites
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+
+- name: Install golang from package manager for bootstraping
+  package:
+    name: "{{ golang_bootstrap_package_name }}"
+    state: present
+
+- name: "Getting golang {{ golang_version }}"
+  git:
+    repo: "{{ golang_repo_url }}"
+    dest: "{{ golang_goroot_folder }}"
+    version: "{{ golang_version }}"
+
+- name: "Building golang {{ golang_version }}"
+  shell: "GOROOT_BOOTSTRAP=$(go env GOROOT) GOOS=$(go env GOOS) GOARCH=$(go env GOARCH) GOHOSTOS=$(go env GOHOSTOS) GOHOSTARCH=$(go env GOHOSTARCH) ./make.bash"
+  args:
+    chdir: "{{ golang_goroot_folder }}/src"
+
+- name: Removing golang from package manager
+  package:
+    name: "{{ golang_bootstrap_package_name }}"
+    state: absent
+
+- name: Setting golang environment
+  template:
+    src: go-env.sh.j2
+    dest: /etc/profile.d/go-env.sh
+    mode: u=rw,g=r,o=r
+    owner: "{{ ansible_user_id }}"
+  become: yes
+

@@ -1,0 +1,45 @@
+stages:
+  - test
+  - deploy
+
+before_script:
+  - cd tests
+
+test_centos:
+  image: docker:git
+  services:
+    - docker:dind
+  stage: test
+  script:
+    - sh test.sh registry.gitlab.com/jnmoal-docker/centos-ansible
+
+test_debian:
+  image: docker:git
+  services:
+    - docker:dind
+  stage: test
+  script:
+    - sh test.sh registry.gitlab.com/jnmoal-docker/debian-ansible
+
+test_fedora:
+  image: docker:git
+  services:
+    - docker:dind
+  stage: test
+  script:
+    - sh test.sh registry.gitlab.com/jnmoal-docker/fedora-ansible
+
+deploy:
+  stage: deploy
+  image: docker:git
+  environment:
+    name: production
+  tags:
+    - personal
+  script:
+    - git clone git@gitlab.com:jnmoal-ansible/golang.git mirror
+    - cd mirror
+    - git remote set-url --push origin git@github.com:jnmoal/ansible-role-golang.git
+    - git push --mirror
+  only:
+    - tags
