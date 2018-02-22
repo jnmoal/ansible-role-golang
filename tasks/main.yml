@@ -7,23 +7,18 @@
     state: present
   with_items:
     - git
+  become: yes
 
 - name: Creating golang directory
   file:
     path: "{{ golang_inst_folder }}"
     state: directory
-    
-- name: Install prerequisites
-  package:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - git
 
 - name: Install golang from package manager for bootstraping
   package:
     name: "{{ golang_bootstrap_package_name }}"
     state: present
+  become: yes
 
 - name: "Getting golang {{ golang_version }}"
   git:
@@ -40,6 +35,7 @@
   package:
     name: "{{ golang_bootstrap_package_name }}"
     state: absent
+  become: yes
 
 - name: Setting golang environment
   template:
